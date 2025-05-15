@@ -30,8 +30,7 @@ runs:
         done
 
     - name: Upload PNGs as artifact
-      shell: bash
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: structurizr-pngs
         path: output/
