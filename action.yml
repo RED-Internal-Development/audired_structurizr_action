@@ -16,6 +16,7 @@ runs:
         java-version: '17'
 
     - name: Run structurizr-to-png container
+      shell: bash
       run: |
         docker pull --quiet extenda/structurizr-to-png
         mkdir -p output
