@@ -1,0 +1,37 @@
+name: AudiRED Structurizr to PNG action
+description: An action created to convert dsl files to png outputs
+inputs:
+  github_token:
+    description: "token used for accessing dependabot data inside repository"
+    required: false
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Download structurizr-to-png
+      shell: bash
+      run: |
+        wget https://github.com/extenda/structurizr-to-png/releases/latest/download/structurizr-to-png.jar -O structurizr-to-png.jar
+
+    - name: Find and convert DSL files to PNG
+      shell: bash
+      run: |
+        mkdir -p output
+        find . -name "*.dsl" | while read dsl_file; do
+          base=$(basename "$dsl_file" .dsl)
+          java -jar structurizr-to-png.jar "$dsl_file" -o "output/${base}.png"
+        done
+
+    - name: Upload PNGs as artifact
+      shell: bash
+      uses: actions/upload-artifact@v3
+      with:
+        name: structurizr-pngs
+        path: output/
