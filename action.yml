@@ -18,9 +18,12 @@ runs:
     - name: Run structurizr-to-png container
       shell: bash
       run: |
-        docker pull --quiet extenda/structurizr-to-png
         mkdir -p output
-        docker run --rm -v "${PWD}/diagrams:/docs" -v "${PWD}/output:/output" extenda/structurizr-to-png
+        docker pull --quiet extenda/structurizr-to-png
+        docker run --rm \
+            -v "${PWD}/docs:/docs" \
+            -v "${PWD}/output:/output" \
+            extenda/structurizr-to-png
 
     - name: Upload PNGs as artifact
       uses: actions/upload-artifact@v4
