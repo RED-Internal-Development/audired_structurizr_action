@@ -16,6 +16,7 @@ runs:
         java-version: '17'
     
     - name: Check for .dsl files
+      shell: bash
       id: dsl_check
       run: |
         if ls **/*.dsl 1> /dev/null 2>&1; then
