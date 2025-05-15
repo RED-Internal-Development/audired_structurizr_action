@@ -19,7 +19,7 @@ runs:
       shell: bash
       id: dsl_check
       run: |
-        if ls **/*.dsl 1> /dev/null 2>&1; then
+        if find docs -type f -name "*.dsl" | grep -q .; then
           echo "has_dsl_files=true" >> $GITHUB_OUTPUT
         else
           echo "has_dsl_files=false" >> $GITHUB_OUTPUT
