@@ -24,6 +24,11 @@ runs:
         else
           echo "has_dsl_files=false" >> $GITHUB_OUTPUT
         fi
+    
+    - name: Skipping Structurizr to PNG
+      if: steps.dsl_check.outputs.has_dsl_files == 'false'
+      shell: bash
+      run: echo "Skipping structurizr to png as no dsl files exist."
 
     - name: Run structurizr-to-png container
       if: steps.dsl_check.outputs.has_dsl_files == 'true'
