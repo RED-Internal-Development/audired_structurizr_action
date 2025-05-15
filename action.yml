@@ -1,8 +1,8 @@
 name: AudiRED Structurizr to PNG action
 description: An action created to convert dsl files to png outputs
 inputs:
-  github_token:
-    description: "token used for accessing dependabot data inside repository"
+  image_output_folder:
+    description: "preferred output folder for images - folder must exist"
     required: false
     type: string
 
@@ -14,19 +14,25 @@ runs:
       with:
         distribution: 'temurin'
         java-version: '17'
+    
+    - name: Check for .dsl files
+      id: dsl_check
+      run: |
+        if ls **/*.dsl 1> /dev/null 2>&1; then
+          echo "has_dsl_files=true" >> $GITHUB_OUTPUT
+        else
+          echo "has_dsl_files=false" >> $GITHUB_OUTPUT
+        fi
 
     - name: Run structurizr-to-png container
+      if: steps.dsl_check.outputs.has_dsl_files == 'true'
       shell: bash
       run: |
-        mkdir -p output
+        output_str=""
+        if [ -n "${{ inputs.image_output_folder }}" ]; then
+          output_str="--output ${{ inputs.image_output_folder }}"
+        fi
         docker pull --quiet extenda/structurizr-to-png
         docker run --rm \
             -v "${PWD}/docs:/docs" \
-            -v "${PWD}/output:/output" \
-            extenda/structurizr-to-png
-
-    - name: Upload PNGs as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: structurizr-pngs
-        path: output/
+            extenda/structurizr-to-png "$output_str"
